@@ -10,14 +10,17 @@ app.use(cors());
 const PORT = process.env.PORT || 3000;
 
 const transporter = nodemailer.createTransport({
-    service: "gmail",
+    service:'gmail',
+    host: process.env.EMAIL_HOST, // Ensure this matches your SMTP provider
+    port: process.env.EMAIL_PORT,
+    secure: process.env.EMAIL_SECURE === "true", // Convert string to boolean
     auth: {
-        user: process.env.EMAIL,
-        pass: process.env.PASSWORD,
+      user: process.env.EMAIL_USER, // Must match the environment variable name
+      pass: process.env.EMAIL_PASS, // Ensure this is an app password (not normal password)
     },
-});
+  });
 
-app.post("/send", async (req, res) => {
+app.post("/", async (req, res) => {
     if (req.method !== "POST") {
         return res.status(405).json({ error: "Method not allowed" });
       }
@@ -30,8 +33,8 @@ app.post("/send", async (req, res) => {
     
     try {
         let info = await transporter.sendMail({
-            from: `"${name}" <${process.env.EMAIL}>`,
-            to: process.env.EMAIL,
+            from: `"${name}" <${process.env.EMAIL_USER}>`,
+            to: process.env.EMAIL_USER,
             subject: `Message from ${name}`,
             text: `Name: ${name}\nEmail: ${email}\n\nMessage:${message}`,
             replyTo:email
