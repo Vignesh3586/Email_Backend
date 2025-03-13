@@ -22,7 +22,7 @@ app.post("/send", async (req, res) => {
         return res.status(405).json({ error: "Method not allowed" });
       }
     
-      const { email, message,name } = req.body;
+      const { email,message,name } = req.body;
       
       if (!email || !message || !name) {
         return res.status(400).json({ message: "Email and message are required" });
